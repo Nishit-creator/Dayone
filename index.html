@@ -97,6 +97,10 @@ footer p{max-width:80ch}
 
 <h2>The weather that day</h2>
 <div id="wx" class="note"></div>
+<h2>The sky that day</h2>
+<div id="sky" class="note"></div>
+<h2>Then versus now</h2>
+<div id="px" class="note"></div>
 <h2>That date in history</h2>
 <div id="ev" class="note"></div>
 
@@ -105,7 +109,6 @@ footer p{max-width:80ch}
 <dl class="todo">
 <div><dt>Number-one song</dt><dd>Not connected yet. Needs licensed, country-specific chart history.</dd></div>
 <div><dt>Movies and pop culture</dt><dd>Not built yet. Needs dated, country-aware datasets.</dd></div>
-<div><dt>Then-versus-now prices</dt><dd>Not connected yet. Needs historical and current price series.</dd></div>
 <div><dt>Exact star chart</dt><dd>Exact moon phase only for now. A full star chart with planets and the horizon is not built yet.</dd></div>
 <div><dt>Personalized film and paid chapters</dt><dd>Not built yet. Needs media licensing, video rendering and a payment provider.</dd></div>
 </dl>
@@ -150,6 +153,39 @@ function moonSVG(p){
 function phaseText(m){return `${m.name}, about ${Math.round(m.ill*100)}% lit`}
 
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SIGNS=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+const PLANETS=[['Mercury','Mercury'],['Venus','Venus'],['Mars','Mars'],['Jupiter','Jupiter'],['Saturn','Saturn']];
+async function loadSky(g,ms,tz){
+  const el=$('sky');
+  if(!g||!window.Astronomy){el.textContent='The sky needs your birthplace to be found. Try the city name alone.';return}
+  try{
+    const obs=new Astronomy.Observer(g.lat,g.lon,0),zone=tz||g.timezone||'UTC';
+    const fmtT=d=>new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',hour12:false}).format(d);
+    const start=new Date(ms-12*36e5);
+    const rs=Astronomy.SearchRiseSet(Astronomy.Body.Sun,obs,+1,start,1.5);
+    const st=Astronomy.SearchRiseSet(Astronomy.Body.Sun,obs,-1,start,1.5);
+    const sunTxt=(rs&&st)?`Sunrise ${fmtT(rs.date)}, sunset ${fmtT(st.date)} (${zone}, approximate).`:'Sunrise and sunset were not found for this place.';
+    const sign=SIGNS[Math.floor(Astronomy.SunPosition(new Date(ms+12*36e5)).elon/30)%12];
+    const inst=new Date(ms+12*36e5);
+    const vis=PLANETS.filter(([n,b])=>{const e=Astronomy.Equator(Astronomy.Body[b],inst,obs,true,true);return Astronomy.Horizon(inst,obs,e.ra,e.dec,'normal').altitude>0}).map(x=>x[0]);
+    el.className='';
+    el.innerHTML=`<p>${sunTxt}</p><p>The Sun was in <b>${sign}</b> (sun sign).</p><p>${vis.length?'Planets above the horizon at midday: '+vis.join(', ')+'.':'No naked-eye planets were above the horizon at the time of noon used here.'}</p><p class="note">Calculated with the astronomy-engine library. Planets are checked at noon, so results are a snapshot, not an exact birth-time sky.</p>`;
+  }catch(e){el.textContent='The sky could not be calculated for this place.'}
+}
+async function loadPrices(geo,y){
+  const el=$('px');
+  if(!geo||!geo.country_code){el.textContent='Prices need your birthplace’s country, which wasn’t found.';return}
+  el.textContent='Loading price data…';
+  try{
+    const r=await fetch(`https://api.worldbank.org/v2/country/${geo.country_code}/indicator/FP.CPI.TOTL?format=json&per_page=100&date=${y}:${new Date().getFullYear()}`);
+    const rows=((await r.json())[1]||[]).filter(x=>x.value!=null).map(x=>({y:+x.date,v:x.value})).sort((a,b)=>a.y-b.y);
+    const base=rows.find(x=>x.y===y),last=rows[rows.length-1];
+    if(!base||!last||last.y===y){el.textContent=`No consumer price data is published for this country in ${y}.`;return}
+    const ratio=last.v/base.v,country=geo.country||geo.country_code;
+    el.className='';
+    el.innerHTML=`<p>In ${country}, consumer prices rose about <b>${Math.round((ratio-1)*100).toLocaleString()}%</b> between ${y} and ${last.y}. Something that cost 100 in ${y} costs about <b>${Math.round(100*ratio).toLocaleString()}</b> in ${last.y}.</p><p class="note">Source: World Bank consumer price index (FP.CPI.TOTL). This is a general average, not the price of any single item.</p>`;
+  }catch(e){el.textContent='Price data could not be loaded. Check your connection and try again.'}
+}
 function moonAt(t){
   if(window.Astronomy){try{
     const a=Astronomy.MoonPhase(new Date(t)),ill=Astronomy.Illumination('Moon',new Date(t)).phase_fraction;
@@ -171,7 +207,7 @@ async function geocode(city){
     const q=city.split(',')[0].trim();
     const r=await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name='+encodeURIComponent(q));
     const g=((await r.json()).results||[])[0];
-    return g?{lat:g.latitude,lon:g.longitude,timezone:g.timezone,label:[g.name,g.admin1,g.country].filter(Boolean).join(', ')}:null;
+    return g?{lat:g.latitude,lon:g.longitude,timezone:g.timezone,country:g.country,country_code:g.country_code,label:[g.name,g.admin1,g.country].filter(Boolean).join(', ')}:null;
   }catch(e){return null}
 }
 const WX={0:'Clear sky',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Rain showers',81:'Rain showers',82:'Violent rain showers',95:'Thunderstorm',96:'Thunderstorm with hail',99:'Thunderstorm with hail'};
@@ -250,7 +286,7 @@ $('f').addEventListener('submit',async ev=>{
   $('cb').textContent=`was born on ${long}, in ${city}, under a ${mo.name.toLowerCase()}.`;
   $('hm').innerHTML=moonSVG(mo.p);
   $('hc').textContent=`Your moon: ${phaseText(mo).toLowerCase()}.`;
-  $('report').classList.add('on');loadWeather(geo,dv);loadEvents(m,d,y);
+  $('report').classList.add('on');loadWeather(geo,dv);loadEvents(m,d,y);loadSky(geo,inst,tz);loadPrices(geo,y);
   $('report').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
 });
 $('pr').addEventListener('click',()=>window.print());
