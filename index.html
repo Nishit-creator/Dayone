@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DAYONE: The day your story began</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,200;9..144,900&family=Hanken+Grotesk:wght@300;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9eef0;--ink:#10202c;--mute:#4a5d6b;--card:#f7f9fa;--line:#b9c6ce;--accent:#9a5600;--accent-ink:#fff;--disc:#2a3e4d;--lit:#f6efd2;
+--serif:'Fraunces',Georgia,serif;--sans:'Hanken Grotesk',system-ui,sans-serif;box-sizing:border-box;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1a24;--ink:#e8e4d6;--mute:#9bb0bd;--card:#14252f;--line:#294050;--accent:#f2b84b;--accent-ink:#0d1a24;--disc:#1b2d3a;--lit:#efe9d2;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1a24;--ink:#e8e4d6;--mute:#9bb0bd;--card:#14252f;--line:#294050;--accent:#f2b84b;--accent-ink:#0d1a24;--disc:#1b2d3a;--lit:#efe9d2;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:300 1.0625rem/1.6 var(--sans)}
+h1,h2,h3{font-family:var(--serif);margin:0;letter-spacing:-.02em;line-height:1.05}
+h1{font-weight:900;font-size:clamp(2.6rem,8vw,5.4rem)}
+h2{font-weight:200;font-size:clamp(1.8rem,4.5vw,3rem);margin-bottom:.4em}
+h3{font-weight:900;font-size:1.15rem;letter-spacing:-.01em}
+p{margin:0 0 1em;max-width:62ch}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+header.top{padding:1.2rem 0;display:flex;justify-content:space-between;align-items:center}
+.logo{font:900 1.4rem var(--serif);letter-spacing:-.03em}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(1.5rem,5vw,4rem);align-items:center;padding:clamp(1rem,4vw,3rem) 0 clamp(2rem,6vw,5rem)}
+.lede{font-size:1.2rem;color:var(--mute);margin:1.2rem 0 1.6rem}
+form{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.f{display:flex;flex-direction:column;gap:.3rem}.f.wide{grid-column:1/-1}
+label{font-weight:500;font-size:.9rem}
+.opt{font-weight:300;color:var(--mute)}
+input,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.7rem .8rem;min-height:2.9rem;width:100%}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button{font:500 1rem var(--sans);cursor:pointer;border-radius:6px;min-height:3rem;padding:.7rem 1.4rem;border:0;background:var(--accent);color:var(--accent-ink)}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.err{grid-column:1/-1;color:var(--accent);min-height:1.4em;margin:0;font-weight:500}
+.moonbox{display:flex;flex-direction:column;align-items:center;gap:1rem;text-align:center}
+.moonbox svg{width:min(100%,420px);height:auto;filter:drop-shadow(0 0 60px rgba(242,184,75,.18));animation:rise 1.4s cubic-bezier(.16,1,.3,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(40px) scale(.94)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.moonbox svg{animation:none}}
+.cap{color:var(--mute);font-size:.95rem;margin:0}
+#report{display:none;padding:2rem 0 3rem;border-top:1px solid var(--line)}
+#report.on{display:block}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:1.5rem 0 2.5rem}
+.stat{background:var(--card);padding:1.2rem 1.3rem}
+.stat b{display:block;font:900 clamp(1.8rem,4vw,2.6rem)/1.1 var(--serif);letter-spacing:-.02em}
+.stat span{color:var(--mute);font-size:.92rem}
+.moonrow{display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:center;margin-bottom:2.5rem}
+.moonrow svg{width:130px;height:130px}
+dl.todo{margin:1rem 0 2.5rem;border-top:1px solid var(--line)}
+dl.todo>div{display:grid;grid-template-columns:minmax(150px,1fr) 2fr;gap:.5rem 1.5rem;padding:.9rem 0;border-bottom:1px solid var(--line)}
+dl.todo dt{font-weight:500}dl.todo dd{margin:0;color:var(--mute)}
+.cert{background:#f6f1de;color:#1a2630;border:2px solid #1a2630;outline:1px solid #1a2630;outline-offset:-10px;padding:clamp(1.8rem,5vw,3.5rem);text-align:center;margin:1.2rem 0}
+.cert h3{font-weight:200;font-size:clamp(1.4rem,4vw,2.2rem);margin-bottom:1rem}
+.cert .nm{font:900 clamp(2rem,6vw,3.6rem)/1.1 var(--serif);margin:.6rem 0}
+.cert p{margin-inline:auto}
+.cert small{display:block;margin-top:1.2rem;color:#4a5560}
+.src{margin:.2rem 0 2rem;padding:0;list-style:none;border-top:1px solid var(--line)}.src li{padding:.7rem 0;border-bottom:1px solid var(--line)}.src b{font-family:var(--serif);font-weight:900;margin-right:.7rem}.src a{color:var(--ink);margin-left:.4rem}.note{color:var(--mute);font-size:.92rem}#ev h3{margin-top:1.4rem}
+footer{border-top:1px solid var(--line);padding:1.5rem 0 2.5rem;color:var(--mute);font-size:.9rem}
+footer p{max-width:80ch}
+@media (max-width:820px){.hero{grid-template-columns:1fr}.moonbox{order:-1}.moonbox svg{width:min(70%,280px)}form{grid-template-columns:1fr}dl.todo>div{grid-template-columns:1fr}.moonrow{grid-template-columns:1fr;justify-items:start}}
+@media print{body *{visibility:hidden}#cert,#cert *{visibility:visible}#cert{position:absolute;left:0;top:0;width:100%;margin:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><span class="logo">DAYONE</span></header>
+
+<section class="hero">
+<div>
+<h1>Rebuild the day you arrived.</h1>
+<p class="lede">Enter your birth details and DAYONE works out the weekday you were born, how long you have been here, the weather that day and the moon above you.</p>
+<form id="f" novalidate>
+<div class="f"><label for="n">Name</label><input id="n" autocomplete="given-name" required></div>
+<div class="f"><label for="d">Date of birth</label><input id="d" type="date" required></div>
+<div class="f wide"><label for="c">Birthplace (city)</label><input id="c" autocomplete="off" required></div>
+<div class="f"><label for="t">Birth time <span class="opt">(optional)</span></label><input id="t" type="time"></div>
+<div class="f"><label for="z">Time zone <span class="opt">(optional)</span></label><select id="z"><option value="">Not sure</option></select></div>
+<p class="err" id="e" role="alert"></p>
+<div class="f wide"><button type="submit">Rebuild my day</button></div>
+</form>
+</div>
+<div class="moonbox">
+<svg id="hm" viewBox="0 0 200 200" role="img" aria-label="Moon phase illustration"></svg>
+<p class="cap" id="hc"></p>
+</div>
+</section>
+
+<section id="report" aria-live="polite">
+<h2 id="rt"></h2>
+<p id="rs"></p>
+<div class="stats" id="st"></div>
+
+<div class="moonrow">
+<svg id="rm" viewBox="0 0 200 200" role="img" aria-label="Moon phase on your birth date"></svg>
+<div><h3 id="mn"></h3><p id="md"></p></div>
+</div>
+
+<h2>The weather that day</h2>
+<div id="wx" class="note"></div>
+<h2>That date in history</h2>
+<div id="ev" class="note"></div>
+
+<h2>Still to come</h2>
+<p>These parts of the report need real historical data, so DAYONE leaves them empty instead of making something up.</p>
+<dl class="todo">
+<div><dt>Number-one song</dt><dd>Not connected yet. Needs licensed, country-specific chart history.</dd></div>
+<div><dt>Movies and pop culture</dt><dd>Not built yet. Needs dated, country-aware datasets.</dd></div>
+<div><dt>Then-versus-now prices</dt><dd>Not connected yet. Needs historical and current price series.</dd></div>
+<div><dt>Exact star chart</dt><dd>Exact moon phase only for now. A full star chart with planets and the horizon is not built yet.</dd></div>
+<div><dt>Personalized film and paid chapters</dt><dd>Not built yet. Needs media licensing, video rendering and a payment provider.</dd></div>
+</dl>
+
+<h2>Your certificate</h2>
+<div class="cert" id="cert">
+<h3>Certificate of arrival</h3>
+<p>This keepsake marks that</p>
+<div class="nm" id="cn"></div>
+<p id="cb"></p>
+<small>A keepsake generated in your browser, not an official record.</small>
+</div>
+<button class="ghost" id="pr" type="button">Print / Save preview</button>
+</section>
+</div>
+
+<footer><div class="wrap">
+<p>Your name is never sent anywhere. To fetch history, your birthplace city and birth date go to Open-Meteo (location and weather) and Wikipedia (events). Heartbeat and breath totals use fixed averages (70 beats and 15 breaths a minute) and are illustrations, not medical data. The moon phase is calculated with the astronomy-engine library, and falls back to an approximation if it can’t load.</p>
+<p>DAYONE is an independent project and is not affiliated with, endorsed by or sponsored by BornHere.</p>
+</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script>
+const SYN=29.530588853,REF=Date.UTC(2000,0,6,18,14);
+const $=id=>document.getElementById(id);
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const fmt=n=>Math.round(n).toLocaleString();
+
+function lunar(ms){
+  const age=(((ms-REF)/864e5)%SYN+SYN)%SYN, p=age/SYN;
+  const ill=(1-Math.cos(2*Math.PI*p))/2;
+  const names=[[1.85,'New moon'],[5.54,'Waxing crescent'],[9.23,'First quarter'],[12.92,'Waxing gibbous'],[16.61,'Full moon'],[20.3,'Waning gibbous'],[23.99,'Last quarter'],[27.68,'Waning crescent'],[99,'New moon']];
+  return {p,ill,age,name:names.find(x=>age<x[0])[1]};
+}
+function moonSVG(p){
+  const r=90,c=100,k=Math.cos(2*Math.PI*p),rx=Math.abs(k)*r,wax=p<=.5,cres=k>0;
+  const s1=wax?1:0,s2=wax?(cres?0:1):(cres?1:0);
+  const lit=`M${c} ${c-r}A${r} ${r} 0 0 ${s1} ${c} ${c+r}A${rx.toFixed(2)} ${r} 0 0 ${s2} ${c} ${c-r}Z`;
+  return `<circle cx="100" cy="100" r="90" fill="var(--disc)" stroke="var(--line)"/><path d="${lit}" fill="var(--lit)"/>`;
+}
+function phaseText(m){return `${m.name}, about ${Math.round(m.ill*100)}% lit`}
+
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function moonAt(t){
+  if(window.Astronomy){try{
+    const a=Astronomy.MoonPhase(new Date(t)),ill=Astronomy.Illumination('Moon',new Date(t)).phase_fraction;
+    const n=[[10,'New moon'],[80,'Waxing crescent'],[100,'First quarter'],[170,'Waxing gibbous'],[190,'Full moon'],[260,'Waning gibbous'],[280,'Last quarter'],[350,'Waning crescent'],[361,'New moon']];
+    return {p:a/360,ill,name:n.find(x=>a<x[0])[1],exact:true};
+  }catch(e){}}
+  return lunar(t);
+}
+function zonedToUTC(y,m,d,hh,mi,tz){
+  const guess=Date.UTC(y,m-1,d,hh,mi);let t=guess;
+  try{for(let i=0;i<2;i++){
+    const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric'}).formatToParts(new Date(t)).map(x=>[x.type,x.value]));
+    t=guess-(Date.UTC(+p.year,p.month-1,+p.day,+p.hour,+p.minute)-t);
+  }}catch(e){return guess}
+  return t;
+}
+async function geocode(city){
+  try{
+    const q=city.split(',')[0].trim();
+    const r=await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name='+encodeURIComponent(q));
+    const g=((await r.json()).results||[])[0];
+    return g?{lat:g.latitude,lon:g.longitude,timezone:g.timezone,label:[g.name,g.admin1,g.country].filter(Boolean).join(', ')}:null;
+  }catch(e){return null}
+}
+const WX={0:'Clear sky',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Rain showers',81:'Rain showers',82:'Violent rain showers',95:'Thunderstorm',96:'Thunderstorm with hail',99:'Thunderstorm with hail'};
+async function loadWeather(g,dv){
+  const el=$('wx');el.className='note';
+  if(!g){el.textContent='Couldn’t find that birthplace, so there is no weather. Try the city name alone, for example “Hisar”.';return}
+  el.textContent='Loading weather…';
+  try{
+    const r=await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${g.lat}&longitude=${g.lon}&start_date=${dv}&end_date=${dv}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code&timezone=auto`);
+    const d=(await r.json()).daily;
+    if(!d||d.temperature_2m_max[0]==null){el.textContent='No weather record is available for this place and date.';return}
+    const pr=d.precipitation_sum[0];
+    el.className='';
+    el.innerHTML=`<p><b>${esc(g.label)}:</b> ${WX[d.weather_code[0]]||'Mixed conditions'}, high ${d.temperature_2m_max[0]}°C, low ${d.temperature_2m_min[0]}°C, ${pr>0?pr+' mm of rain or snow':'no recorded rain'}.</p><p class="note">Modelled data from Open-Meteo (ERA5 reanalysis), not a weather-station reading.</p>`;
+  }catch(e){el.textContent='Weather could not be loaded. Check your connection and try again.'}
+}
+async function loadEvents(m,d,y){
+  const el=$('ev');el.className='note';el.textContent='Loading events…';
+  try{
+    const r=await fetch(`https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`);
+    const j=await r.json();
+    const near=a=>(a||[]).filter(x=>x.year&&x.pages&&x.pages[0]&&x.pages[0].content_urls).sort((a,b)=>Math.abs(a.year-y)-Math.abs(b.year-y)).slice(0,4);
+    const li=x=>`<li><b>${x.year}</b>${esc(x.text)}<a href="${esc(x.pages[0].content_urls.desktop.page)}" target="_blank" rel="noopener">Wikipedia</a></li>`;
+    el.className='';
+    el.innerHTML=`<p class="note">Events on ${d} ${MONTHS[m-1]} in the years closest to ${y}. Source: Wikipedia.</p><ul class="src">${near(j.events).map(li).join('')}</ul><h3>People born on ${d} ${MONTHS[m-1]}</h3><ul class="src">${near(j.births).map(li).join('')}</ul>`;
+  }catch(e){el.textContent='Events could not be loaded. Check your connection and try again.'}
+}
+
+// Hero moon starts as today's moon
+const now0=new Date(),today=lunar(Date.UTC(now0.getFullYear(),now0.getMonth(),now0.getDate(),12));
+$('hm').innerHTML=moonSVG(today.p);
+$('hc').textContent="Tonight’s moon: "+phaseText(today).toLowerCase()+". Yours is waiting.";
+
+// Time zones
+try{const sel=$('z');Intl.supportedValuesOf('timeZone').forEach(z=>{const o=document.createElement('option');o.value=o.textContent=z;sel.appendChild(o)})}catch(e){}
+
+function age(b,n){
+  let y=n.getFullYear()-b.y;
+  if(n.getMonth()<b.m||(n.getMonth()===b.m&&n.getDate()<b.d))y--;
+  return y;
+}
+
+$('f').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const name=$('n').value.trim(),dv=$('d').value,city=$('c').value.trim(),err=$('e');
+  if(!name){err.textContent='Enter your name.';$('n').focus();return}
+  if(!dv){err.textContent='Enter your date of birth.';$('d').focus();return}
+  const [y,m,d]=dv.split('-').map(Number),ms=Date.UTC(y,m-1,d,12),now=new Date();
+  if(ms>now.getTime()){err.textContent='Date of birth can’t be in the future. Check the date.';$('d').focus();return}
+  if(y<1900){err.textContent='Enter a date from 1900 onward.';$('d').focus();return}
+  if(!city){err.textContent='Enter your birthplace city.';$('c').focus();return}
+  err.textContent='Looking up your birthplace…';
+  const btn=ev.submitter;if(btn)btn.disabled=true;
+  const geo=await geocode(city);
+  if(btn)btn.disabled=false;
+  err.textContent='';
+
+  const wd=DAYS[new Date(ms).getUTCDay()],long=`${wd}, ${d} ${MONTHS[m-1]} ${y}`;
+  const yrs=age({y,m:m-1,d},now),elapsed=now.getTime()-ms,days=Math.floor(elapsed/864e5),mins=elapsed/6e4;
+  let nb=new Date(now.getFullYear(),m-1,d);
+  if(nb<new Date(now.getFullYear(),now.getMonth(),now.getDate()))nb=new Date(now.getFullYear()+1,m-1,d);
+  const toNext=Math.round((nb-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);
+  const tz=$('z').value||(geo&&geo.timezone)||'',tv=$('t').value;
+  let inst=ms;
+  if(tv){const [hh,mi]=tv.split(':').map(Number);inst=tz?zonedToUTC(y,m,d,hh,mi,tz):Date.UTC(y,m-1,d,hh,mi)}
+  const mo=moonAt(inst);
+
+  $('rt').textContent=`${name}, you arrived on a ${wd}.`;
+  $('rs').textContent=`${long}, in ${city}.`;
+  const stats=[[yrs,'years old'],[fmt(days),'days lived'],[fmt(mins*70),'estimated heartbeats'],[fmt(mins*15),'estimated breaths'],[toNext===0?'Today':fmt(toNext),toNext===0?'is your birthday':'days to your next birthday']];
+  $('st').innerHTML=stats.map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('');
+  $('rm').innerHTML=moonSVG(mo.p);
+  $('mn').textContent=mo.name;
+  $('md').textContent=`On your birth ${tv?'time':'date'} the moon was ${phaseText(mo).replace(mo.name+', ','')}. `+(mo.exact?(tv?'Calculated for your birth time.':'Calculated for midday on your birth date. Add a birth time for a closer result.'):'This is an approximation, so it can be off by a day near a phase change.');
+  $('cn').textContent=name;
+  $('cb').textContent=`was born on ${long}, in ${city}, under a ${mo.name.toLowerCase()}.`;
+  $('hm').innerHTML=moonSVG(mo.p);
+  $('hc').textContent=`Your moon: ${phaseText(mo).toLowerCase()}.`;
+  $('report').classList.add('on');loadWeather(geo,dv);loadEvents(m,d,y);
+  $('report').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+});
+$('pr').addEventListener('click',()=>window.print());
+</script>
+</body>
+</html>
